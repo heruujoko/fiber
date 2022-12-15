@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"time"
 
@@ -13,11 +14,12 @@ import (
 )
 
 func main() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		JSONEncoder: json.Marshal,
+		JSONDecoder: json.Unmarshal,
+	})
 
-	firebaseAuth := auth.Register(app)
-
-	log.Println(firebaseAuth)
+	auth.Register(app)
 
 	app.Use(limiter.New(limiter.Config{
 		Expiration: 1 * time.Hour,
